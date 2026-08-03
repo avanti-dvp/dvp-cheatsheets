@@ -27,9 +27,10 @@ Servir como **referência rápida** durante o dia a dia de trabalho com DevOps �
 
 ## 🖨️ Como usar
 
-1. **Abra o `.html` diretamente no navegador** (duplo clique ou `open arquivo.html`)
-2. Use o botão **🖨️ Imprimir PDF** no canto inferior direito para gerar um PDF limpo (estilo A4, sem o botão)
-3. Funciona **100% offline** — sem dependências externas, CDN ou build step
+1. Faça o clone do repositório ou baixe o `.html` desejado
+2. **Abra o `.html` diretamente no navegador** (duplo clique ou `open arquivo.html`)
+3. Use o botão **🖨️ Imprimir PDF** no canto inferior direito para gerar um PDF limpo (estilo A4, sem o botão)
+4. Funciona **100% offline** — sem dependências externas, CDN ou build step
 
 ## 📄 Licença
 
