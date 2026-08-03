@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitLab CI Cheat Sheet</title>
+    <style>
+        :root {
+            /* Cor de destaque baseada na identidade visual do GitLab (Laranja) */
+            --gitlab-orange: #FC6D26; 
+            --gitlab-dark: #292961; /* Azul escuro do GitLab */
+            --text-main: #2D3748;
+            --text-muted: #718096;
+            --bg-body: #F7FAFC;
+            --bg-card: #FFFFFF;
+            --border-color: #E2E8F0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: var(--text-main);
+            background-color: var(--bg-body);
+            line-height: 1.5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid var(--gitlab-orange);
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            color: var(--gitlab-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        header p {
+            color: var(--text-muted);
+            margin-top: 5px;
+            font-size: 1rem;
+        }
+
+        h2 {
+            font-size: 1.15rem;
+            color: var(--gitlab-orange);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .masonry-grid {
+            column-count: 2;
+            column-gap: 20px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            break-inside: avoid;
+            page-break-inside: avoid;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+            font-size: 0.85rem;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 8px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: #F7FAFC;
+            font-weight: 600;
+            color: #4A5568;
+        }
+
+        code {
+            font-family: "Fira Code", "Courier New", Courier, monospace;
+            background-color: #FFF3F0; /* Fundo laranja clarinho */
+            color: #D93F00; /* Laranja mais escuro para destaque */
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-size: 0.85em;
+        }
+
+        pre {
+            background-color: #2D3748;
+            color: #E2E8F0;
+            padding: 12px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 0.85rem;
+            margin-bottom: 15px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+        }
+
+        ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+
+        ul li {
+            margin-bottom: 5px;
+        }
+
+        .print-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: var(--gitlab-orange);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(252, 109, 38, 0.3);
+            transition: background 0.2s;
+            z-index: 1000;
+        }
+
+        .print-btn:hover {
+            background-color: #E24329;
+        }
+
+        @media (max-width: 768px) {
+            .masonry-grid {
+                column-count: 1;
+            }
+        }
+
+        @media print {
+            @page {
+                size: A4;
+                margin: 1cm;
+            }
+            body {
+                background-color: white;
+                padding: 0;
+                font-size: 9pt;
+            }
+            .container {
+                max-width: 100%;
+            }
+            .masonry-grid {
+                column-count: 2;
+                column-gap: 15px;
+            }
+            .card {
+                box-shadow: none;
+                border: 1px solid #ddd;
+                padding: 12px;
+                margin-bottom: 15px;
+            }
+            pre {
+                background-color: #f4f4f4;
+                color: #000;
+                border: 1px solid #ccc;
+            }
+            code {
+                color: #000;
+                border: 1px solid #eee;
+            }
+            .print-btn {
+                display: none !important;
+            }
+            header {
+                margin-bottom: 15px;
+                padding-bottom: 10px;
+            }
+            h2 {
+                margin-bottom: 10px;
+            }
+            table {
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="print-btn" onclick="window.print()">🖨️ Imprimir PDF</button>
+
+    <div class="container">
+        <header>
+            <h1>🦊 GitLab CI Cheat Sheet</h1>
+            <p>Guia rápido de pipelines, stages, rules e sintaxe do .gitlab-ci.yml</p>
+        </header>
+
+        <div class="masonry-grid">
+            
+            <div class="card">
+                <h2>📁 Estrutura Básica (.gitlab-ci.yml)</h2>
+                <p style="font-size: 0.85rem; margin-bottom: 10px; color: #718096;">O arquivo deve ficar na raiz do repositório. Ele define imagens, estágios e os jobs (tarefas).</p>
+<pre><code># Define a imagem Docker padrão para todos os jobs
+image: node:18-alpine
+
+# Define a ordem de execução dos estágios
+stages:
+  - build
+  - test
+  - deploy
+
+# Declaração de um Job
+compilar_projeto:
+  stage: build # Associa o job a um estágio
+  script:
+    - echo "Iniciando o build..."
+    - npm install
+    - npm run build</code></pre>
+            </div>
+
+            <div class="card">
+                <h2>🏗️ Estágios (Stages) e Ordem</h2>
+                <p style="font-size: 0.85rem; margin-bottom: 10px;">Controlam o fluxo do pipeline. Os estágios rodam <b>sequencialmente</b>. Jobs no mesmo estágio rodam em <b>paralelo</b>.</p>
+                <ul>
+                    <li>Se um job falhar em um estágio, o pipeline inteiro para (por padrão), e o próximo estágio não é executado.</li>
+                    <li>Jobs que não declaram um <code>stage:</code> assumem o estágio padrão <code>test</code>.</li>
+                    <li>Estágios padrão implícitos: <code>.pre</code>, <code>build</code>, <code>test</code>, <code>deploy</code>, <code>.post</code>.</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h2>📦 Cache vs Artifacts (Artefatos)</h2>
+                <p style="font-size: 0.85rem; margin-bottom: 10px;">Dois conceitos cruciais para otimização e passagem de arquivos.</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Recurso</th>
+                            <th>Uso Principal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>cache:</code></td>
+                            <td>Guarda dependências (ex: <i>node_modules</i>) para acelerar execuções futuras. Não garante que estará lá no próximo job.</td>
+                        </tr>
+                        <tr>
+                            <td><code>artifacts:</code></td>
+                            <td>Arquivos gerados pelo build (ex: executáveis, relatórios). São passados adiante para os <b>próximos estágios</b> garantidamente.</td>
+                        </tr>
+                    </tbody>
+                </table>
+<pre><code>build_job:
+  stage: build
+  script: npm run build
+  artifacts:
+    paths:
+      - dist/ # Passa a pasta dist para o deploy
+    expire_in: 1 week # Expira após 1 semana
+  cache:
+    key: $CI_COMMIT_REF_SLUG # Cache por branch
+    paths:
+      - node_modules/</code></pre>
+            </div>
+
+            <div class="card">
+                <h2>🐳 Imagens e Serviços (Services)</h2>
+                <p style="font-size: 0.85rem; margin-bottom: 10px;">Subir containers auxiliares durante o job (como banco de dados para testes).</p>
+<pre><code>testar_com_banco:
+  stage: test
+  image: python:3.9
+  services: # Sobe serviços atrelados ao job
+    - name: postgres:13
+      alias: db # Nome do host no teste
+  variables: # Variáveis para configurar o serviço
+    POSTGRES_DB: banco_teste
+    POSTGRES_PASSWORD: senha123
+  script:
+    - pip install pytest psycopg2
+    - pytest</code></pre>
+            </div>
+
+            <div class="card">
+                <h2>🎯 Rules (Controle de Execução)</h2>
+                <p style="font-size: 0.85rem; margin-bottom: 10px;">Mecanismo moderno para decidir quando um job deve (ou não) rodar. Substitui o antigo <code>only/except</code>.</p>
+<pre><code>deploy_producao:
+  stage: deploy
+  script: ./deploy.sh
+  rules:
+    # 1. Roda automaticamente se for branch main
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      
+    # 2. Permite rodar MANUALMENTE se for tag v*
+    - if: '$CI_COMMIT_TAG =~ /^v\d+/'
+      when: manual
+      
+    # 3. Nunca roda em Merge Requests
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: never</code></pre>
+            </div>
+
+            <div class="card">
+                <h2>🌐 Variáveis Predefinidas (CI Variables)</h2>
+                <p style="font-size: 0.85rem; margin-bottom: 10px;">O GitLab injeta dezenas de variáveis úteis em tempo de execução.</p>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td><code>$CI_COMMIT_BRANCH</code></td>
+                            <td>Nome da branch do commit (ex: <i>main</i>, <i>feature-x</i>).</td>
+                        </tr>
+                        <tr>
+                            <td><code>$CI_COMMIT_SHA</code></td>
+                            <td>O hash completo de 40 caracteres do commit.</td>
+                        </tr>
+                        <tr>
+                            <td><code>$CI_PIPELINE_ID</code></td>
+                            <td>ID numérico único para a execução do pipeline atual.</td>
+                        </tr>
+                        <tr>
+                            <td><code>$CI_PROJECT_NAME</code></td>
+                            <td>Nome do projeto/repositório.</td>
+                        </tr>
+                        <tr>
+                            <td><code>$CI_REGISTRY_IMAGE</code></td>
+                            <td>Endereço base para o Container Registry deste projeto.</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p style="font-size: 0.85rem; margin-top: 10px; color: #718096;"><strong>Dica de Segurança:</strong> Crie variáveis sensíveis (Senhas, Tokens da AWS) em <i>Settings > CI/CD > Variables</i> na interface do GitLab (Marque como Masked).</p>
+            </div>
+
+            <div class="card">
+                <h2>🔗 Reutilização (Include e Extends)</h2>
+                <p style="font-size: 0.85rem; margin-bottom: 10px;">Evite repetição de código (DRY) quebrando seus YAMLs ou herdando configurações.</p>
+<pre><code># Importar outro arquivo YAML para este pipeline
+include:
+  - local: '/templates/.ci-deploy.yml'
+
+# Template "Escondido" (começa com ponto)
+.template_job:
+  image: alpine:latest
+  before_script:
+    - apk add curl
+
+# Herdar do template
+meu_job_real:
+  extends: .template_job
+  script:
+    - curl http://exemplo.com</code></pre>
+            </div>
+            
+            <div class="card">
+                <h2>🌍 Ambientes (Environments)</h2>
+                <p style="font-size: 0.85rem; margin-bottom: 10px;">Usado para rastrear deploys. Habilita botões de "Rollback" e links diretos na interface gráfica do GitLab.</p>
+<pre><code>deploy_staging:
+  stage: deploy
+  script: echo "Deploy feito!"
+  environment:
+    name: staging
+    url: https://staging.meuapp.com.br
+    # Evento executado se o ambiente for "parado"
+    on_stop: stop_staging 
+
+stop_staging:
+  stage: deploy
+  script: echo "Desligando servidor..."
+  when: manual
+  environment:
+    name: staging
+    action: stop</code></pre>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>

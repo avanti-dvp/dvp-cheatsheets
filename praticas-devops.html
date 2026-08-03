@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevOps Practices Cheat Sheet</title>
+    <style>
+        :root {
+            /* Cor tema de DevOps: Teal/Turquesa moderno */
+            --devops-teal: #0D9488; 
+            --devops-dark: #115E59; 
+            --text-main: #2D3748;
+            --text-muted: #718096;
+            --bg-body: #F7FAFC;
+            --bg-card: #FFFFFF;
+            --border-color: #E2E8F0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: var(--text-main);
+            background-color: var(--bg-body);
+            line-height: 1.5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid var(--devops-teal);
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            color: var(--devops-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        header p {
+            color: var(--text-muted);
+            margin-top: 5px;
+            font-size: 1rem;
+        }
+
+        h2 {
+            font-size: 1.15rem;
+            color: var(--devops-teal);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .masonry-grid {
+            column-count: 2;
+            column-gap: 20px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            break-inside: avoid;
+            page-break-inside: avoid;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+            font-size: 0.85rem;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 8px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: #F0FDFA; /* Fundo verde claro para combinar com Teal */
+            font-weight: 600;
+            color: var(--devops-dark);
+        }
+
+        code {
+            font-family: "Fira Code", "Courier New", Courier, monospace;
+            background-color: #F0FDFA;
+            color: #0F766E;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-size: 0.85em;
+        }
+
+        ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+
+        ul li {
+            margin-bottom: 5px;
+        }
+
+        .highlight-box {
+            background-color: #F0FDFA;
+            border-left: 4px solid var(--devops-teal);
+            padding: 10px;
+            margin-bottom: 15px;
+            font-size: 0.85rem;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .print-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: var(--devops-teal);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(13, 148, 136, 0.3);
+            transition: background 0.2s;
+            z-index: 1000;
+        }
+
+        .print-btn:hover {
+            background-color: var(--devops-dark);
+        }
+
+        @media (max-width: 768px) {
+            .masonry-grid {
+                column-count: 1;
+            }
+        }
+
+        @media print {
+            @page {
+                size: A4;
+                margin: 1cm;
+            }
+            body {
+                background-color: white;
+                padding: 0;
+                font-size: 9pt;
+            }
+            .container {
+                max-width: 100%;
+            }
+            .masonry-grid {
+                column-count: 2;
+                column-gap: 15px;
+            }
+            .card {
+                box-shadow: none;
+                border: 1px solid #ddd;
+                padding: 12px;
+                margin-bottom: 15px;
+            }
+            .highlight-box {
+                background-color: #f9f9f9;
+                border-left-color: #888;
+                color: #000;
+            }
+            code {
+                color: #000;
+                border: 1px solid #eee;
+                background-color: transparent;
+            }
+            .print-btn {
+                display: none !important;
+            }
+            header {
+                margin-bottom: 15px;
+                padding-bottom: 10px;
+            }
+            h2 {
+                margin-bottom: 10px;
+            }
+            table {
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="print-btn" onclick="window.print()">🖨️ Imprimir PDF</button>
+
+    <div class="container">
+        <header>
+            <h1>♾️ Práticas DevOps Cheat Sheet</h1>
+            <p>Guia de referência para Cultura, CI/CD, IaC, Observabilidade e DevSecOps</p>
+        </header>
+
+        <div class="masonry-grid">
+            
+            <div class="card">
+                <h2>🧠 Cultura CALMS</h2>
+                <p style="font-size: 0.85rem; margin-bottom: 10px; color: #718096;">DevOps não é uma ferramenta, é uma cultura. O framework CALMS define seus pilares principais.</p>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td><strong>C</strong>ulture</td>
+                            <td>(Cultura): Quebrar silos entre Dev (Desenvolvimento) e Ops (Operações). Responsabilidade compartilhada.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>A</strong>utomation</td>
+                            <td>(Automação): Eliminar trabalho manual repetitivo (toil) para reduzir erros e acelerar entregas.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>L</strong>ean</td>
+                            <td>(Enxuto): Produzir em lotes pequenos, minimizar desperdícios e focar em entregar valor contínuo.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>M</strong>easurement</td>
+                            <td>(Medição): Tudo deve ser medido (Métricas, KPIs). Decisões baseadas em dados, não em intuição.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>S</strong>haring</td>
+                            <td>(Compartilhamento): Compartilhar conhecimento, código e responsabilidades. <i>Blameless Post-mortems</i> (Análises sem culpa).</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h2>🔄 CI vs. CD (Integração e Entrega)</h2>
+                <p style="font-size: 0.85rem; margin-bottom: 10px;">Compreendendo o Pipeline Contínuo.</p>
+                <ul>
+                    <li><strong>Continuous Integration (CI):</strong> Desenvolvedores fazem o merge do código na branch principal <i>frequentemente</i> (várias vezes ao dia). Aciona builds automáticos e testes de unidade. Previne o "Integration Hell".</li>
+                    <li><strong>Continuous Delivery (Entrega Contínua - CD):</strong> O código aprovado na CI é empacotado e fica <i>pronto</i> para ir para produção. A ida para produção exige uma aprovação ou o clique de um botão manual.</li>
+                    <li><strong>Continuous Deployment (Implantação Contínua - CD):</strong> É o próximo passo da Entrega. Se o código passar por todos os testes e etapas, ele vai <i>automaticamente</i> para produção. Sem intervenção humana.</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>Regra de Ouro:</strong> CI garante que o código está bom; CD garante que o deploy é repetível, seguro e fácil.
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>🏗️ Infraestrutura como Código (IaC)</h2>
+                <p style="font-size: 0.85rem; margin-bottom: 10px;">Gerenciamento de recursos computacionais via arquivos de definição legíveis por máquina, ao invés de configurações interativas manuais (cliques).</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Prática</th>
+                            <th>Descrição</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Declarativo</strong></td>
+                            <td>Você diz <i>o que</i> quer (ex: "Quero 3 servidores"), não como fazer (Terraform, Kubernetes).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Imperativo</strong></td>
+                            <td>Você diz <i>como</i> fazer passo a passo (ex: Bash scripts, Ansible em partes).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Imutabilidade</strong></td>
+                            <td>Se um servidor apresenta problema, você <i>não</i> entra nele para arrumar. Você destrói e o IaC sobe um novo idêntico do zero (Cattle vs. Pets).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>GitOps</strong></td>
+                            <td>O Git se torna a "Única Fonte da Verdade" (Single Source of Truth). O estado da infra reflete exatamente o que está na branch main.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h2>👁️ Observabilidade (Os 3 Pilares)</h2>
+                <p style="font-size: 0.85rem; margin-bottom: 10px;">Capacidade de inferir o estado interno de um sistema a partir das suas saídas externas.</p>
+                <ul>
+                    <li><strong>📊 Métricas (Metrics):</strong> Dados numéricos ao longo de um período de tempo. Útil para alertas e painéis. <i>Ex: CPU em 90%, 500 req/segundo. (Ferramentas: Prometheus, Grafana).</i></li>
+                    <li><strong>📝 Logs:</strong> Registros imutáveis, com timestamp, sobre eventos que aconteceram no sistema. Servem para investigação e auditoria. <i>Ex: "Usuário X falhou login às 10:00". (Ferramentas: ELK Stack, Loki).</i></li>
+                    <li><strong>🔗 Traces (Rastreamento Distribuído):</strong> Acompanha a jornada de uma requisição única passando por múltiplos microsserviços. Crucial para achar gargalos em sistemas distribuídos. <i>(Ferramentas: Jaeger, OpenTelemetry).</i></li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h2>🛡️ DevSecOps & Shift-Left</h2>
+                <p style="font-size: 0.85rem; margin-bottom: 10px;">"Shift-Left" significa mover a preocupação com a Segurança e Testes para o início (esquerda) do ciclo de desenvolvimento, e não deixar para o final.</p>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td><strong>SAST</strong></td>
+                            <td><i>Static Application Security Testing:</i> Escaneia o código-fonte parado (sem rodar) atrás de vulnerabilidades e más práticas (ex: SonarQube).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>SCA</strong></td>
+                            <td><i>Software Composition Analysis:</i> Verifica as bibliotecas/dependências de terceiros no projeto em busca de falhas conhecidas (CVEs).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>DAST</strong></td>
+                            <td><i>Dynamic Application Security Testing:</i> Tenta hackear/atacar a aplicação enquanto ela está rodando para achar falhas como SQL Injection.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Secret Scanning</strong></td>
+                            <td>Impede (ou alerta) que desenvolvedores "commitem" senhas, chaves AWS e tokens direto no código-fonte.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h2>📈 Métricas DORA (Desempenho)</h2>
+                <p style="font-size: 0.85rem; margin-bottom: 10px;">Padrão ouro do Google DevOps Research and Assessment para medir a performance de times de engenharia.</p>
+                <ul>
+                    <li><strong>Frequência de Deploy:</strong> Com que frequência a equipe libera código para produção? (Medida de velocidade).</li>
+                    <li><strong>Lead Time para Mudanças:</strong> Quanto tempo leva para um commit chegar a produção? (Velocidade).</li>
+                    <li><strong>Tempo de Restauração (MTTR):</strong> Quando há um incidente, quão rápido o time consegue restaurar o serviço? (Estabilidade).</li>
+                    <li><strong>Taxa de Falha de Mudança (CFR):</strong> Qual a porcentagem de deploys que causam falhas exigindo rollback/hotfix? (Estabilidade).</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h2>🚀 Estratégias de Implantação Avançadas</h2>
+                <p style="font-size: 0.85rem; margin-bottom: 10px;">Formas seguras de enviar novas versões ao cliente sem derrubar o sistema (Zero Downtime).</p>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td><strong>Blue/Green</strong></td>
+                            <td>Mantém dois ambientes de produção idênticos. O "Blue" é o atual. Você atualiza o "Green". Se tudo estiver bem, você vira o roteamento/tráfego de rede para o Green instantaneamente.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Canary Release</strong></td>
+                            <td>(Deploy Canário): Libera a nova versão para uma pequena porcentagem dos usuários (ex: 5%). Monitora-se o comportamento. Se der certo, aumenta gradativamente até 100%.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Feature Toggles</strong></td>
+                            <td>(Flags): O código novo já está em produção, mas escondido atrás de uma variável `if (nova_feature_ativa)`. Permite ligar/desligar funcionalidades via painel sem novo deploy.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>

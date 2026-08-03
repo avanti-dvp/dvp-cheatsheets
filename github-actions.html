@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Actions Cheat Sheet</title>
+    <style>
+        :root {
+            /* Cor de destaque baseada na identidade visual do GitHub e GitHub Actions */
+            --gha-blue: #2088FF; 
+            --gha-dark: #24292e;
+            --text-main: #2D3748;
+            --text-muted: #718096;
+            --bg-body: #F7FAFC;
+            --bg-card: #FFFFFF;
+            --border-color: #E2E8F0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: var(--text-main);
+            background-color: var(--bg-body);
+            line-height: 1.5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid var(--gha-blue);
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            color: var(--gha-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        header p {
+            color: var(--text-muted);
+            margin-top: 5px;
+            font-size: 1rem;
+        }
+
+        h2 {
+            font-size: 1.15rem;
+            color: var(--gha-blue);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .masonry-grid {
+            column-count: 2;
+            column-gap: 20px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            break-inside: avoid;
+            page-break-inside: avoid;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+            font-size: 0.85rem;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 8px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: #F7FAFC;
+            font-weight: 600;
+            color: #4A5568;
+        }
+
+        code {
+            font-family: "Fira Code", "Courier New", Courier, monospace;
+            background-color: #EDF2F7;
+            color: #0366D6; /* Azul do GitHub para destaques inline */
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-size: 0.85em;
+        }
+
+        pre {
+            background-color: var(--gha-dark);
+            color: #E1E4E8;
+            padding: 12px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 0.85rem;
+            margin-bottom: 15px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+        }
+
+        ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+
+        ul li {
+            margin-bottom: 5px;
+        }
+
+        .print-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: var(--gha-blue);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(32, 136, 255, 0.3);
+            transition: background 0.2s;
+            z-index: 1000;
+        }
+
+        .print-btn:hover {
+            background-color: #0366D6;
+        }
+
+        @media (max-width: 768px) {
+            .masonry-grid {
+                column-count: 1;
+            }
+        }
+
+        @media print {
+            @page {
+                size: A4;
+                margin: 1cm;
+            }
+            body {
+                background-color: white;
+                padding: 0;
+                font-size: 9pt;
+            }
+            .container {
+                max-width: 100%;
+            }
+            .masonry-grid {
+                column-count: 2;
+                column-gap: 15px;
+            }
+            .card {
+                box-shadow: none;
+                border: 1px solid #ddd;
+                padding: 12px;
+                margin-bottom: 15px;
+            }
+            pre {
+                background-color: #f4f4f4;
+                color: #000;
+                border: 1px solid #ccc;
+            }
+            code {
+                color: #000;
+                border: 1px solid #eee;
+            }
+            .print-btn {
+                display: none !important;
+            }
+            header {
+                margin-bottom: 15px;
+                padding-bottom: 10px;
+            }
+            h2 {
+                margin-bottom: 10px;
+            }
+            table {
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="print-btn" onclick="window.print()">🖨️ Imprimir PDF</button>
+
+    <div class="container">
+        <header>
+            <h1>▶️ GitHub Actions Cheat Sheet</h1>
+            <p>Guia rápido de workflows, triggers, contexts e syntax YAML para CI/CD</p>
+        </header>
+
+        <div class="masonry-grid">
+            
+            <div class="card">
+                <h2>📁 Estrutura Básica de um Workflow</h2>
+                <p style="font-size: 0.85rem; margin-bottom: 10px; color: #718096;">Os arquivos YAML devem estar localizados no diretório <code>.github/workflows/</code> do seu repositório.</p>
+<pre><code>name: Meu Primeiro Workflow # Nome do workflow
+
+on: [push] # Evento que aciona (Trigger)
+
+jobs: # Agrupamento de tarefas
+  build: # Identificador do job
+    runs-on: ubuntu-latest # Máquina virtual (Runner)
+    
+    steps: # Sequência de tarefas (passos)
+      - name: Fazer Checkout do Código
+        uses: actions/checkout@v4
+        
+      - name: Instalar Dependências
+        run: npm install
+        
+      - name: Executar Testes
+        run: npm test</code></pre>
+            </div>
+
+            <div class="card">
+                <h2>⚡ Principais Triggers (Eventos)</h2>
+                <p style="font-size: 0.85rem; margin-bottom: 10px;">Eventos que iniciam a execução do seu workflow definidos em <code>on:</code>.</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Sintaxe</th>
+                            <th>Descrição</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>on: push</code></td>
+                            <td>Aciona sempre que houver um push (qualquer branch/tag).</td>
+                        </tr>
+                        <tr>
+                            <td><code>on: pull_request</code></td>
+                            <td>Aciona em criação, atualização ou merge de PRs.</td>
+                        </tr>
+                        <tr>
+                            <td><code>on: schedule</code></td>
+                            <td>Aciona por agendamento (Expressão CRON).<br>Ex: <code>- cron: '0 0 * * *'</code> (Diariamente)</td>
+                        </tr>
+                        <tr>
+                            <td><code>on: workflow_dispatch</code></td>
+                            <td>Permite execução manual do workflow via botão na interface do GitHub.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h2>🎯 Filtros de Triggers (Branches, Paths e Tags)</h2>
+                <p style="font-size: 0.85rem; margin-bottom: 10px;">Restrinja a execução do workflow a branches ou arquivos específicos.</p>
+<pre><code>on:
+  push:
+    branches:
+      - main
+      - 'releases/**'
+    branches-ignore: # Não executa nestas
+      - 'experiment'
+    tags:
+      - 'v1.*'
+    paths:
+      - 'src/**/*.js' # Executa só se arquivos js mudarem
+    paths-ignore:
+      - 'docs/**' # Ignora mudanças na pasta docs</code></pre>
+            </div>
+
+            <div class="card">
+                <h2>🌐 Contexts (Variáveis do GitHub)</h2>
+                <p style="font-size: 0.85rem; margin-bottom: 10px;">Informações sobre a execução, acessadas pela sintaxe <code>${{ &lt;contexto&gt; }}</code>.</p>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td><code>${{ github.actor }}</code></td>
+                            <td>Usuário que iniciou o workflow.</td>
+                        </tr>
+                        <tr>
+                            <td><code>${{ github.repository }}</code></td>
+                            <td>Nome do repositório (ex: user/repo).</td>
+                        </tr>
+                        <tr>
+                            <td><code>${{ github.ref_name }}</code></td>
+                            <td>Nome da branch ou tag (ex: main, v1.0).</td>
+                        </tr>
+                        <tr>
+                            <td><code>${{ github.event_name }}</code></td>
+                            <td>O nome do evento que acionou (ex: push).</td>
+                        </tr>
+                        <tr>
+                            <td><code>${{ job.status }}</code></td>
+                            <td>Status atual do job (success, failure, cancelled).</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h2>🔐 Secrets e Variáveis de Ambiente</h2>
+                <p style="font-size: 0.85rem; margin-bottom: 10px;">Como usar dados sensíveis e gerenciar variáveis globais e de passo.</p>
+<pre><code>env: # Variáveis globais do workflow
+  NOME_APP: "MeuAplicativo"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Usar variáveis
+        run: echo "Iniciando $NOME_APP"
+        
+      - name: Autenticar API
+        run: ./script.sh --token $API_TOKEN
+        env: # Variável local do step com Secret
+          API_TOKEN: ${{ secrets.SUPER_SECRET_TOKEN }}</code></pre>
+                <p style="font-size: 0.85rem; margin-top: 10px; color: #718096;"><strong>Dica:</strong> Secrets são configurados em <i>Settings > Secrets and variables > Actions</i> do repositório.</p>
+            </div>
+
+            <div class="card">
+                <h2>🔀 Estratégia de Matriz (Matrix)</h2>
+                <p style="font-size: 0.85rem; margin-bottom: 10px;">Executa o mesmo job várias vezes simultaneamente com diferentes variáveis (ex: testar múltiplas versões de Node ou OS).</p>
+<pre><code>jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16.x, 18.x, 20.x]
+        # Cria 3 jobs paralelos (um para cada versão)
+    
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}</code></pre>
+            </div>
+
+            <div class="card">
+                <h2>📦 Actions Mais Usadas</h2>
+                <p style="font-size: 0.85rem; margin-bottom: 10px;">As Actions prontas oficiais do GitHub que você vai usar em quase todo projeto.</p>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td><code>actions/checkout@v4</code></td>
+                            <td>Clona o seu repositório no runner para permitir a leitura do código.</td>
+                        </tr>
+                        <tr>
+                            <td><code>actions/setup-node@v4</code></td>
+                            <td>Instala e configura ambiente Node.js. (Existe similar para <code>setup-python</code>, <code>setup-java</code>, etc).</td>
+                        </tr>
+                        <tr>
+                            <td><code>actions/upload-artifact@v4</code></td>
+                            <td>Faz upload de arquivos gerados no workflow (ex: build, logs) para download no GitHub.</td>
+                        </tr>
+                        <tr>
+                            <td><code>actions/download-artifact@v4</code></td>
+                            <td>Baixa arquivos salvos pelo `upload-artifact` em jobs anteriores.</td>
+                        </tr>
+                        <tr>
+                            <td><code>actions/cache@v4</code></td>
+                            <td>Guarda cache de dependências (como node_modules) para acelerar builds futuros.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h2>🔀 Condicionais (if) e Dependências (needs)</h2>
+                <p style="font-size: 0.85rem; margin-bottom: 10px;">Controle o fluxo de execução entre jobs e passos.</p>
+<pre><code>jobs:
+  build_test:
+    runs-on: ubuntu-latest
+    steps:
+      - run: make build
+      
+      - name: Executa apenas se a branch for main
+        if: github.ref == 'refs/heads/main'
+        run: echo "Fazendo algo especial na main"
+
+  # Esse job só inicia APÓS o build_test finalizar com sucesso
+  deploy:
+    needs: build_test
+    runs-on: ubuntu-latest
+    
+    # Roda sempre, mesmo se os jobs anteriores falharem
+    if: always() 
+    steps:
+      - run: ./deploy.sh</code></pre>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>

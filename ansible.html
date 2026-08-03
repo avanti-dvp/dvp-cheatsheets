@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ansible Cheat Sheet</title>
+    <style>
+        :root {
+            --ansible-red: #EE0000;
+            --text-main: #2D3748;
+            --text-muted: #718096;
+            --bg-body: #F7FAFC;
+            --bg-card: #FFFFFF;
+            --border-color: #E2E8F0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: var(--text-main);
+            background-color: var(--bg-body);
+            line-height: 1.5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid var(--ansible-red);
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            color: #1A202C;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        header p {
+            color: var(--text-muted);
+            margin-top: 5px;
+            font-size: 1rem;
+        }
+
+        h2 {
+            font-size: 1.15rem;
+            color: var(--ansible-red);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .masonry-grid {
+            column-count: 2;
+            column-gap: 20px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            break-inside: avoid;
+            page-break-inside: avoid;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+            font-size: 0.85rem;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 8px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: #F7FAFC;
+            font-weight: 600;
+            color: #4A5568;
+        }
+
+        code {
+            font-family: "Fira Code", "Courier New", Courier, monospace;
+            background-color: #EDF2F7;
+            color: #C53030;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-size: 0.85em;
+        }
+
+        pre {
+            background-color: #2D3748;
+            color: #E2E8F0;
+            padding: 12px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 0.85rem;
+            margin-bottom: 15px;
+            white-space: pre-wrap; /* Garante que o texto não corte na impressão */
+            word-wrap: break-word;
+        }
+
+        pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+        }
+
+        ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+
+        ul li {
+            margin-bottom: 5px;
+        }
+
+        .print-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: var(--ansible-red);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(238, 0, 0, 0.3);
+            transition: background 0.2s;
+            z-index: 1000;
+        }
+
+        .print-btn:hover {
+            background-color: #cc0000;
+        }
+
+        @media (max-width: 768px) {
+            .masonry-grid {
+                column-count: 1;
+            }
+        }
+
+        @media print {
+            @page {
+                size: A4;
+                margin: 1cm;
+            }
+            body {
+                background-color: white;
+                padding: 0;
+                font-size: 9pt;
+            }
+            .container {
+                max-width: 100%;
+            }
+            .masonry-grid {
+                column-count: 2;
+                column-gap: 15px;
+            }
+            .card {
+                box-shadow: none;
+                border: 1px solid #ddd;
+                padding: 12px;
+                margin-bottom: 15px;
+            }
+            pre {
+                background-color: #f4f4f4;
+                color: #000;
+                border: 1px solid #ccc;
+            }
+            code {
+                color: #000;
+                border: 1px solid #eee;
+            }
+            .print-btn {
+                display: none !important;
+            }
+            header {
+                margin-bottom: 15px;
+                padding-bottom: 10px;
+            }
+            h2 {
+                margin-bottom: 10px;
+            }
+            table {
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="print-btn" onclick="window.print()">🖨️ Imprimir PDF</button>
+
+    <div class="container">
+        <header>
+            <h1>⚙️ Ansible Cheat Sheet</h1>
+            <p>Guia rápido de comandos, módulos e estruturas para o dia a dia</p>
+        </header>
+
+        <div class="masonry-grid">
+            
+            <div class="card">
+                <h2>🛠️ Conceitos Básicos & Configuração</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Comando / Arquivo</th>
+                            <th>Descrição</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>ansible --version</code></td>
+                            <td>Exibe a versão instalada do Ansible</td>
+                        </tr>
+                        <tr>
+                            <td><code>/etc/ansible/hosts</code></td>
+                            <td>Arquivo de inventário padrão</td>
+                        </tr>
+                        <tr>
+                            <td><code>/etc/ansible/ansible.cfg</code></td>
+                            <td>Arquivo de configuração padrão</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h2>📡 Inventário e Conectividade</h2>
+                <p style="font-size: 0.85rem; margin-bottom: 10px; color: #718096;">Testar a comunicação e listar os hosts definidos no inventário.</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Comando</th>
+                            <th>Descrição</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>ansible all -m ping</code></td>
+                            <td>Testa conexão com todos os hosts</td>
+                        </tr>
+                        <tr>
+                            <td><code>ansible all --list-hosts</code></td>
+                            <td>Lista todos os hosts gerenciados</td>
+                        </tr>
+                        <tr>
+                            <td><code>ansible webservers -m ping</code></td>
+                            <td>Testa conexão só com o grupo <i>webservers</i></td>
+                        </tr>
+                        <tr>
+                            <td><code>ansible -i custom_hosts all -m ping</code></td>
+                            <td>Usa arquivo de inventário customizado</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h2>⚡ Comandos Ad-Hoc</h2>
+                <p style="font-size: 0.85rem; margin-bottom: 10px;">Executar tarefas rápidas sem criar playbook.</p>
+                <p style="font-size: 0.85rem; margin-bottom: 10px;"><strong>Sintaxe:</strong> <code>ansible &lt;hosts&gt; -m &lt;modulo&gt; -a "&lt;args&gt;" [opções]</code></p>
+                
+                <strong>Opções Frequentes:</strong>
+                <ul>
+                    <li><code>-b</code> ou <code>--become</code>: Privilégios de superusuário (sudo).</li>
+                    <li><code>-K</code> ou <code>--ask-become-pass</code>: Pede a senha do sudo.</li>
+                    <li><code>-u &lt;usuario&gt;</code>: Usuário para conectar via SSH.</li>
+                </ul>
+
+                <strong>Exemplos Práticos:</strong>
+<pre><code># Verificar uptime de todos os servidores
+ansible all -a "uptime"
+
+# Instalar o Nginx (apt)
+ansible webservers -m apt -a "name=nginx state=present" -b
+
+# Reiniciar um serviço
+ansible dbservers -m service -a "name=mysql state=restarted" -b
+
+# Copiar arquivo local para remotos
+ansible all -m copy -a "src=/local/arq.txt dest=/tmp/arq.txt"</code></pre>
+            </div>
+
+            <div class="card">
+                <h2>📦 Módulos Essenciais</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Módulo</th>
+                            <th>Função Principal</th>
+                            <th>Exemplo de Argumentos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>ping</strong></td>
+                            <td>Testa conectividade SSH/Python</td>
+                            <td><em>(Sem argumentos)</em></td>
+                        </tr>
+                        <tr>
+                            <td><strong>setup</strong></td>
+                            <td>Coleta fatos (facts) do host</td>
+                            <td><code>filter=ansible_os_family</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>command</strong></td>
+                            <td>Executa comandos (sem pipes)</td>
+                            <td><code>uptime</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>shell</strong></td>
+                            <td>Executa comandos (c/ pipes)</td>
+                            <td><code>cat /etc/passwd | grep root</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>apt/yum</strong></td>
+                            <td>Gerencia pacotes (Debian/RHEL)</td>
+                            <td><code>name=git state=latest</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>service</strong></td>
+                            <td>Gerencia serviços</td>
+                            <td><code>name=httpd state=started</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>copy</strong></td>
+                            <td>Copia arquivos</td>
+                            <td><code>src=./arq.txt dest=/tmp/arq.txt</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>file</strong></td>
+                            <td>Gerencia arquivos/diretórios</td>
+                            <td><code>path=/tmp/dir state=directory</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>user</strong></td>
+                            <td>Gerencia usuários</td>
+                            <td><code>name=joao state=present</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h2>📜 Playbooks</h2>
+                <p style="font-size: 0.85rem; margin-bottom: 10px;">Arquivos YAML que definem o estado desejado.</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Comando</th>
+                            <th>Descrição</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>ansible-playbook site.yml</code></td>
+                            <td>Executa o playbook</td>
+                        </tr>
+                        <tr>
+                            <td><code>ansible-playbook site.yml --syntax-check</code></td>
+                            <td>Verifica a sintaxe YAML</td>
+                        </tr>
+                        <tr>
+                            <td><code>ansible-playbook site.yml --check</code></td>
+                            <td><strong>Dry run</strong> (Simula execução)</td>
+                        </tr>
+                        <tr>
+                            <td><code>ansible-playbook site.yml -l srv1</code></td>
+                            <td>Executa num host específico</td>
+                        </tr>
+                        <tr>
+                            <td><code>ansible-playbook site.yml -t "deploy"</code></td>
+                            <td>Executa tarefas com a tag específica</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <strong>Estrutura Básica (<code>exemplo.yml</code>):</strong>
+<pre><code>---
+- name: Instalar e iniciar servidor Apache
+  hosts: webservers
+  become: yes
+  
+  tasks:
+    - name: Garantir que o apache2 está instalado
+      apt:
+        name: apache2
+        state: present
+
+    - name: Garantir que o serviço está rodando
+      service:
+        name: apache2
+        state: started
+        enabled: yes</code></pre>
+            </div>
+
+            <div class="card">
+                <h2>🧩 Roles (Papéis)</h2>
+                <p style="font-size: 0.85rem; margin-bottom: 10px;">Maneira de agrupar tarefas, variáveis e arquivos de forma padronizada e reutilizável.</p>
+                
+                <strong>Estrutura Padrão de Diretórios:</strong>
+                <ul>
+                    <li><code>tasks/</code> - As ações principais (main.yml).</li>
+                    <li><code>handlers/</code> - Handlers acionados por tarefas.</li>
+                    <li><code>defaults/</code> - Variáveis padrão (menor prioridade).</li>
+                    <li><code>vars/</code> - Variáveis da role (maior prioridade).</li>
+                    <li><code>files/</code> - Arquivos estáticos (para o módulo <i>copy</i>).</li>
+                    <li><code>templates/</code> - Templates Jinja2 (para o módulo <i>template</i>).</li>
+                    <li><code>meta/</code> - Dependências da role.</li>
+                </ul>
+
+                <strong>Como usar no Playbook:</strong>
+<pre><code>---
+- hosts: webservers
+  roles:
+    - common
+    - role: nginx
+      vars:
+        porta_padrao: 8080</code></pre>
+            </div>
+
+            <div class="card">
+                <h2>🔐 Ansible Vault</h2>
+                <p style="font-size: 0.85rem; margin-bottom: 10px;">Ferramenta para criptografar dados sensíveis.</p>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td><code>ansible-vault create arq.yml</code></td>
+                            <td>Cria arquivo criptografado</td>
+                        </tr>
+                        <tr>
+                            <td><code>ansible-vault edit arq.yml</code></td>
+                            <td>Edita arquivo existente</td>
+                        </tr>
+                        <tr>
+                            <td><code>ansible-vault encrypt arq.yml</code></td>
+                            <td>Criptografa arquivo existente</td>
+                        </tr>
+                        <tr>
+                            <td><code>ansible-vault decrypt arq.yml</code></td>
+                            <td>Descriptografa arquivo</td>
+                        </tr>
+                    </tbody>
+                </table>
+<pre><code># Executando playbooks com Vault
+ansible-playbook site.yml --ask-vault-pass
+ansible-playbook site.yml --vault-password-file ~/.senha</code></pre>
+            </div>
+
+            <div class="card">
+                <h2>🌌 Ansible Galaxy</h2>
+                <p style="font-size: 0.85rem; margin-bottom: 10px;">Gerenciamento de Roles do Ansible.</p>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td><code>ansible-galaxy install &lt;role&gt;</code></td>
+                            <td>Instala uma role</td>
+                        </tr>
+                        <tr>
+                            <td><code>ansible-galaxy init &lt;nome&gt;</code></td>
+                            <td>Cria estrutura base para role</td>
+                        </tr>
+                        <tr>
+                            <td><code>ansible-galaxy list</code></td>
+                            <td>Lista roles instaladas</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>

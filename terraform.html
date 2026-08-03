@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terraform Cheat Sheet</title>
+    <style>
+        :root {
+            /* Cor oficial do Terraform (Roxo) */
+            --tf-purple: #844FBA; 
+            --text-main: #2D3748;
+            --text-muted: #718096;
+            --bg-body: #F7FAFC;
+            --bg-card: #FFFFFF;
+            --border-color: #E2E8F0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: var(--text-main);
+            background-color: var(--bg-body);
+            line-height: 1.5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid var(--tf-purple);
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            color: #1A202C;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        header p {
+            color: var(--text-muted);
+            margin-top: 5px;
+            font-size: 1rem;
+        }
+
+        h2 {
+            font-size: 1.15rem;
+            color: var(--tf-purple);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .masonry-grid {
+            column-count: 2;
+            column-gap: 20px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            break-inside: avoid;
+            page-break-inside: avoid;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+            font-size: 0.85rem;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 8px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: #F7FAFC;
+            font-weight: 600;
+            color: #4A5568;
+        }
+
+        code {
+            font-family: "Fira Code", "Courier New", Courier, monospace;
+            background-color: #EDF2F7;
+            color: #6B46C1; /* Roxo mais escuro para destaque */
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-size: 0.85em;
+        }
+
+        pre {
+            background-color: #2D3748;
+            color: #E2E8F0;
+            padding: 12px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 0.85rem;
+            margin-bottom: 15px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+        }
+
+        ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+
+        ul li {
+            margin-bottom: 5px;
+        }
+
+        .print-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: var(--tf-purple);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(132, 79, 186, 0.3);
+            transition: background 0.2s;
+            z-index: 1000;
+        }
+
+        .print-btn:hover {
+            background-color: #6B3E99;
+        }
+
+        @media (max-width: 768px) {
+            .masonry-grid {
+                column-count: 1;
+            }
+        }
+
+        @media print {
+            @page {
+                size: A4;
+                margin: 1cm;
+            }
+            body {
+                background-color: white;
+                padding: 0;
+                font-size: 9pt;
+            }
+            .container {
+                max-width: 100%;
+            }
+            .masonry-grid {
+                column-count: 2;
+                column-gap: 15px;
+            }
+            .card {
+                box-shadow: none;
+                border: 1px solid #ddd;
+                padding: 12px;
+                margin-bottom: 15px;
+            }
+            pre {
+                background-color: #f4f4f4;
+                color: #000;
+                border: 1px solid #ccc;
+            }
+            code {
+                color: #000;
+                border: 1px solid #eee;
+            }
+            .print-btn {
+                display: none !important;
+            }
+            header {
+                margin-bottom: 15px;
+                padding-bottom: 10px;
+            }
+            h2 {
+                margin-bottom: 10px;
+            }
+            table {
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="print-btn" onclick="window.print()">🖨️ Imprimir PDF</button>
+
+    <div class="container">
+        <header>
+            <h1>🏗️ Terraform Cheat Sheet</h1>
+            <p>Guia rápido de comandos, estado e estrutura HCL para Infraestrutura como Código</p>
+        </header>
+
+        <div class="masonry-grid">
+            
+            <div class="card">
+                <h2>🔄 Fluxo de Trabalho Principal (Core Workflow)</h2>
+                <p style="font-size: 0.85rem; margin-bottom: 10px; color: #718096;">O ciclo de vida básico de qualquer projeto Terraform.</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Comando</th>
+                            <th>Descrição</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>terraform init</code></td>
+                            <td>Inicializa o diretório, baixa providers e módulos</td>
+                        </tr>
+                        <tr>
+                            <td><code>terraform plan</code></td>
+                            <td>Gera e exibe um plano de execução (o que vai mudar)</td>
+                        </tr>
+                        <tr>
+                            <td><code>terraform apply</code></td>
+                            <td>Aplica as mudanças reais na infraestrutura</td>
+                        </tr>
+                        <tr>
+                            <td><code>terraform destroy</code></td>
+                            <td>Destrói todos os recursos gerenciados pelo projeto</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h2>⚡ Opções Úteis do CLI</h2>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td><code>apply -auto-approve</code></td>
+                            <td>Aplica alterações sem pedir confirmação manual (yes)</td>
+                        </tr>
+                        <tr>
+                            <td><code>plan -out=plano.tfplan</code></td>
+                            <td>Salva o plano de execução em um arquivo</td>
+                        </tr>
+                        <tr>
+                            <td><code>apply "plano.tfplan"</code></td>
+                            <td>Aplica um plano previamente salvo</td>
+                        </tr>
+                        <tr>
+                            <td><code>apply -replace="recurso"</code></td>
+                            <td>Força a recriação de um recurso específico (substitui o antigo <i>taint</i>)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h2>🗂️ Gerenciamento de Estado (State)</h2>
+                <p style="font-size: 0.85rem; margin-bottom: 10px;">Interações diretas com o arquivo <code>terraform.tfstate</code>.</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Comando</th>
+                            <th>Descrição</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>terraform state list</code></td>
+                            <td>Lista todos os recursos rastreados no estado</td>
+                        </tr>
+                        <tr>
+                            <td><code>terraform state show &lt;id&gt;</code></td>
+                            <td>Exibe os detalhes e atributos de um recurso</td>
+                        </tr>
+                        <tr>
+                            <td><code>terraform state mv &lt;src&gt; &lt;dst&gt;</code></td>
+                            <td>Move um recurso no estado (renomear/refatorar)</td>
+                        </tr>
+                        <tr>
+                            <td><code>terraform state rm &lt;id&gt;</code></td>
+                            <td>Remove recurso do state (NÃO destrói na nuvem)</td>
+                        </tr>
+                        <tr>
+                            <td><code>terraform refresh</code></td>
+                            <td>Atualiza o state com a infraestrutura real (Implícito no plan/apply)</td>
+                        </tr>
+                        <tr>
+                            <td><code>terraform import &lt;addr&gt; &lt;id&gt;</code></td>
+                            <td>Mapeia um recurso já existente na nuvem para o state</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h2>📁 Estrutura Padrão de Arquivos</h2>
+                <ul>
+                    <li><code>main.tf</code>: Recursos principais e lógica.</li>
+                    <li><code>variables.tf</code>: Declaração de variáveis de entrada.</li>
+                    <li><code>outputs.tf</code>: Valores retornados após o apply.</li>
+                    <li><code>providers.tf</code>: Configuração de provedores (AWS, Azure, etc).</li>
+                    <li><code>terraform.tfvars</code>: Valores atribuídos às variáveis.</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h2>📝 Sintaxe Básica (HCL)</h2>
+                <p style="font-size: 0.85rem; margin-bottom: 10px;">Estrutura dos blocos principais do Terraform.</p>
+<pre><code># 1. Configuração do Provider
+provider "aws" {
+  region = "us-east-1"
+}
+
+# 2. Criação de um Recurso
+resource "aws_instance" "web" {
+  ami           = var.ami_id
+  instance_type = "t2.micro"
+  
+  tags = {
+    Name = "WebServer"
+  }
+}
+
+# 3. Variável de Entrada
+variable "ami_id" {
+  description = "ID da Imagem"
+  type        = string
+  default     = "ami-123456"
+}
+
+# 4. Variável de Saída (Output)
+output "ip_publico" {
+  value = aws_instance.web.public_ip
+}</code></pre>
+            </div>
+
+            <div class="card">
+                <h2>🛠️ Formatação e Validação</h2>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td><code>terraform fmt</code></td>
+                            <td>Reescreve os arquivos para o padrão canônico (formatação visual)</td>
+                        </tr>
+                        <tr>
+                            <td><code>terraform fmt -check</code></td>
+                            <td>Verifica se os arquivos estão formatados sem alterá-los</td>
+                        </tr>
+                        <tr>
+                            <td><code>terraform validate</code></td>
+                            <td>Verifica se a sintaxe e os argumentos HCL são válidos e consistentes</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h2>📦 Módulos (Modules)</h2>
+                <p style="font-size: 0.85rem; margin-bottom: 10px;">Agrupamento de recursos para organização e reutilização de código infraestrutural.</p>
+<pre><code># Chamando um módulo local (sua própria pasta)
+module "vpc_custom" {
+  source = "./modules/vpc"
+  
+  # Passando variáveis exigidas pelo módulo
+  cidr_block = "10.0.0.0/16"
+  ambiente   = "producao"
+}
+
+# Chamando um módulo do Terraform Registry
+module "s3_bucket" {
+  source  = "terraform-aws-modules/s3-bucket/aws"
+  version = "~> 3.0"
+
+  bucket = "meu-bucket-exemplo"
+}</code></pre>
+                <p style="font-size: 0.85rem; margin-top: 10px; color: #718096;"><strong>Dica:</strong> Sempre que adicionar um novo módulo ou alterar seu <code>source</code>, você precisará rodar <code>terraform init</code> (ou <code>terraform get</code>) para que o Terraform faça o download do código dele.</p>
+            </div>
+
+            <div class="card">
+                <h2>🌍 Workspaces (Ambientes)</h2>
+                <p style="font-size: 0.85rem; margin-bottom: 10px;">Isolamento de estado para múltiplos ambientes (ex: dev, prod) no mesmo diretório.</p>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td><code>terraform workspace show</code></td>
+                            <td>Exibe o workspace atual</td>
+                        </tr>
+                        <tr>
+                            <td><code>terraform workspace list</code></td>
+                            <td>Lista todos os workspaces</td>
+                        </tr>
+                        <tr>
+                            <td><code>terraform workspace new &lt;nome&gt;</code></td>
+                            <td>Cria e muda para um novo workspace</td>
+                        </tr>
+                        <tr>
+                            <td><code>terraform workspace select &lt;nome&gt;</code></td>
+                            <td>Alterna para um workspace existente</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docker Cheat Sheet</title>
+    <style>
+        :root {
+            /* Cor oficial do Docker (Azul) */
+            --docker-blue: #2496ED; 
+            --text-main: #2D3748;
+            --text-muted: #718096;
+            --bg-body: #F7FAFC;
+            --bg-card: #FFFFFF;
+            --border-color: #E2E8F0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: var(--text-main);
+            background-color: var(--bg-body);
+            line-height: 1.5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid var(--docker-blue);
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            color: #1A202C;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        header p {
+            color: var(--text-muted);
+            margin-top: 5px;
+            font-size: 1rem;
+        }
+
+        h2 {
+            font-size: 1.15rem;
+            color: var(--docker-blue);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .masonry-grid {
+            column-count: 2;
+            column-gap: 20px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            break-inside: avoid;
+            page-break-inside: avoid;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+            font-size: 0.85rem;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 8px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: #F7FAFC;
+            font-weight: 600;
+            color: #4A5568;
+        }
+
+        code {
+            font-family: "Fira Code", "Courier New", Courier, monospace;
+            background-color: #EDF2F7;
+            color: #1A73E8; /* Azul mais escuro para destaque no texto */
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-size: 0.85em;
+        }
+
+        pre {
+            background-color: #2D3748;
+            color: #E2E8F0;
+            padding: 12px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 0.85rem;
+            margin-bottom: 15px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+        }
+
+        ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+
+        ul li {
+            margin-bottom: 5px;
+        }
+
+        .print-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: var(--docker-blue);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(36, 150, 237, 0.3);
+            transition: background 0.2s;
+            z-index: 1000;
+        }
+
+        .print-btn:hover {
+            background-color: #1a7bbd;
+        }
+
+        @media (max-width: 768px) {
+            .masonry-grid {
+                column-count: 1;
+            }
+        }
+
+        @media print {
+            @page {
+                size: A4;
+                margin: 1cm;
+            }
+            body {
+                background-color: white;
+                padding: 0;
+                font-size: 9pt;
+            }
+            .container {
+                max-width: 100%;
+            }
+            .masonry-grid {
+                column-count: 2;
+                column-gap: 15px;
+            }
+            .card {
+                box-shadow: none;
+                border: 1px solid #ddd;
+                padding: 12px;
+                margin-bottom: 15px;
+            }
+            pre {
+                background-color: #f4f4f4;
+                color: #000;
+                border: 1px solid #ccc;
+            }
+            code {
+                color: #000;
+                border: 1px solid #eee;
+            }
+            .print-btn {
+                display: none !important;
+            }
+            header {
+                margin-bottom: 15px;
+                padding-bottom: 10px;
+            }
+            h2 {
+                margin-bottom: 10px;
+            }
+            table {
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="print-btn" onclick="window.print()">🖨️ Imprimir PDF</button>
+
+    <div class="container">
+        <header>
+            <h1>🐳 Docker Cheat Sheet</h1>
+            <p>Guia rápido de Comandos CLI, instruções Dockerfile e Docker Compose</p>
+        </header>
+
+        <div class="masonry-grid">
+            
+            <div class="card">
+                <h2>📦 Gerenciamento de Containers</h2>
+                <p style="font-size: 0.85rem; margin-bottom: 10px; color: #718096;">Ciclo de vida e execução de containers.</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Comando</th>
+                            <th>Descrição</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>docker run -d -p 80:80 nginx</code></td>
+                            <td>Roda um container em background (detached) mapeando a porta 80</td>
+                        </tr>
+                        <tr>
+                            <td><code>docker run -it ubuntu bash</code></td>
+                            <td>Roda um container interativo com terminal</td>
+                        </tr>
+                        <tr>
+                            <td><code>docker ps</code></td>
+                            <td>Lista containers em execução</td>
+                        </tr>
+                        <tr>
+                            <td><code>docker ps -a</code></td>
+                            <td>Lista todos os containers (inclusive parados)</td>
+                        </tr>
+                        <tr>
+                            <td><code>docker stop &lt;id&gt;</code></td>
+                            <td>Para um container em execução de forma graciosa</td>
+                        </tr>
+                        <tr>
+                            <td><code>docker rm &lt;id&gt;</code></td>
+                            <td>Remove um container (precisa estar parado)</td>
+                        </tr>
+                        <tr>
+                            <td><code>docker rm -f &lt;id&gt;</code></td>
+                            <td>Força a parada e remove o container</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h2>💿 Gerenciamento de Imagens</h2>
+                <p style="font-size: 0.85rem; margin-bottom: 10px;">Download, criação e remoção de imagens Docker.</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Comando</th>
+                            <th>Descrição</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>docker pull &lt;imagem&gt;</code></td>
+                            <td>Baixa uma imagem do Docker Hub</td>
+                        </tr>
+                        <tr>
+                            <td><code>docker build -t app:v1 .</code></td>
+                            <td>Constrói uma imagem a partir do Dockerfile no diretório atual</td>
+                        </tr>
+                        <tr>
+                            <td><code>docker images</code></td>
+                            <td>Lista imagens armazenadas localmente</td>
+                        </tr>
+                        <tr>
+                            <td><code>docker rmi &lt;id_imagem&gt;</code></td>
+                            <td>Remove uma imagem local</td>
+                        </tr>
+                        <tr>
+                            <td><code>docker push &lt;usuario/img&gt;</code></td>
+                            <td>Envia uma imagem para um Registry (ex: Docker Hub)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h2>🛠️ Operações e Debugging</h2>
+                <p style="font-size: 0.85rem; margin-bottom: 10px;">Interagindo com containers em execução.</p>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td><code>docker exec -it &lt;id&gt; sh</code></td>
+                            <td>Abre um terminal dentro de um container rodando</td>
+                        </tr>
+                        <tr>
+                            <td><code>docker logs &lt;id&gt;</code></td>
+                            <td>Exibe os logs do container</td>
+                        </tr>
+                        <tr>
+                            <td><code>docker logs -f &lt;id&gt;</code></td>
+                            <td>Acompanha os logs em tempo real (follow)</td>
+                        </tr>
+                        <tr>
+                            <td><code>docker top &lt;id&gt;</code></td>
+                            <td>Mostra os processos rodando no container</td>
+                        </tr>
+                        <tr>
+                            <td><code>docker inspect &lt;id&gt;</code></td>
+                            <td>Exibe detalhes de baixo nível (JSON) do container/imagem</td>
+                        </tr>
+                        <tr>
+                            <td><code>docker stats</code></td>
+                            <td>Mostra uso de CPU, RAM e Rede em tempo real</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h2>📝 Dockerfile (Instruções)</h2>
+                <p style="font-size: 0.85rem; margin-bottom: 10px;">Como escrever a "receita" para sua própria imagem.</p>
+<pre><code># 1. Imagem Base
+FROM node:18-alpine
+
+# 2. Diretório de Trabalho (onde os comandos rodarão)
+WORKDIR /app
+
+# 3. Copia arquivos (host -> container)
+COPY package.json ./
+
+# 4. Executa um comando durante o build
+RUN npm install
+
+# 5. Copia o restante dos arquivos
+COPY . .
+
+# 6. Define variável de ambiente
+ENV NODE_ENV=production
+
+# 7. Documenta a porta que será usada
+EXPOSE 3000
+
+# 8. Comando executado ao iniciar o container
+CMD ["npm", "start"]</code></pre>
+            </div>
+
+            <div class="card">
+                <h2>🐙 Docker Compose (Comandos CLI)</h2>
+                <p style="font-size: 0.85rem; margin-bottom: 10px;">Orquestração de múltiplos containers.</p>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td><code>docker-compose up -d</code></td>
+                            <td>Cria e inicia os serviços em background</td>
+                        </tr>
+                        <tr>
+                            <td><code>docker-compose down</code></td>
+                            <td>Para e remove containers, redes e volumes associados</td>
+                        </tr>
+                        <tr>
+                            <td><code>docker-compose stop</code></td>
+                            <td>Apenas para os serviços (sem remover)</td>
+                        </tr>
+                        <tr>
+                            <td><code>docker-compose start</code></td>
+                            <td>Inicia serviços que estavam parados</td>
+                        </tr>
+                        <tr>
+                            <td><code>docker-compose build</code></td>
+                            <td>Reconstrói as imagens dos serviços</td>
+                        </tr>
+                        <tr>
+                            <td><code>docker-compose logs -f</code></td>
+                            <td>Visualiza logs de todos os serviços (ou <code>logs -f &lt;servico&gt;</code>)</td>
+                        </tr>
+                        <tr>
+                            <td><code>docker-compose ps</code></td>
+                            <td>Lista os containers gerenciados pelo compose</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h2>📄 Estrutura docker-compose.yml</h2>
+                <p style="font-size: 0.85rem; margin-bottom: 10px;">Definição de infraestrutura multi-container via YAML.</p>
+<pre><code>version: '3.8'
+
+services:
+  frontend:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+  backend:
+    build: ./meu-backend # Usa Dockerfile local
+    environment:
+      - DB_HOST=database
+      - DB_PASS=secreta
+
+  database:
+    image: postgres:13
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+# Declaração de volumes persistentes nomeados
+volumes:
+  db-data:</code></pre>
+            </div>
+
+            <div class="card">
+                <h2>🧹 Limpeza de Sistema (Prune)</h2>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td><code>docker system prune</code></td>
+                            <td>Limpa containers parados, redes não usadas, imagens sem tag (dangling) e cache de build</td>
+                        </tr>
+                        <tr>
+                            <td><code>docker system prune -a</code></td>
+                            <td>Remove TUDO que não estiver sendo usado (incluindo imagens com tag)</td>
+                        </tr>
+                        <tr>
+                            <td><code>docker volume prune</code></td>
+                            <td>Remove volumes que não estão atachados a nenhum container</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h2>🖧 Redes e Volumes</h2>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td><code>docker network ls</code></td>
+                            <td>Lista as redes Docker</td>
+                        </tr>
+                        <tr>
+                            <td><code>docker network create &lt;nome&gt;</code></td>
+                            <td>Cria uma nova rede isolada</td>
+                        </tr>
+                        <tr>
+                            <td><code>docker volume ls</code></td>
+                            <td>Lista volumes nomeados</td>
+                        </tr>
+                        <tr>
+                            <td><code>docker volume create &lt;nome&gt;</code></td>
+                            <td>Cria um volume persistente</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>
